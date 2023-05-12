@@ -1,8 +1,8 @@
 const pool = require('../sql/connection')
 
 const list = (req, res) => {
-    pool.query("SELECT * FROM title", (err, rows, fields) => {
-     res.json(rows)
+    pool.query(`SELECT * FROM title WHERE user_id = ${req.user.id}`, (err, rows, fields) => {
+     res.json({titles: rows, user: req.user})
     })
  }
 

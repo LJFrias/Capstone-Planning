@@ -7,6 +7,7 @@ const userRoutes = require('./routes/users')
 const titleRoutes = require('./routes/title')
 const signupRoutes = require('./routes/signup')
 const signinRoutes = require('./routes/signin')
+const cors = require('cors')
 
 const PORT = process.env.PORT || 5000
 
@@ -19,7 +20,7 @@ function authenticateToken(req, res, next) {
 
     if(!token) return res.sendStatus(401)
 
-    jwt.verify(token, "movies", (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if(err) return res.sendStatus(403)
 
         req.user = user
@@ -28,6 +29,39 @@ function authenticateToken(req, res, next) {
     })
 }
 
+
+app.use(cors())
+app.use(function (req, res, next) {
+    //Website we allow
+    // res.setHeader(
+    //     "Access-Control-Allow-Orgin",
+    //     "http://localhost:3000"
+    // )
+
+    res.setHeader(
+        "Access-Control-Allow-Orgin",
+        "https://iridescent-cuchufli-0277ba.netlify.app"
+    )
+
+    //Methods we allow
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "POST"
+    )
+
+    //Content we allow
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "X-Requested-With,content-type"
+    )
+
+    //Set to true if you need the website to include cookies in the request sent to the API
+    res.setHeader(
+        "Access-Control-Allow-Credentials",
+        true
+    )
+    next()
+})
 app.use(express.json())
 app.use("/users", authenticateToken, userRoutes)
 app.use("/title", authenticateToken, titleRoutes )

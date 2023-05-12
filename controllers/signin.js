@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 
 const generateToken = (user) => {
-    return jwt.sign(user, "movies")
+    return jwt.sign(user, process.env.JWT_SECRET)
 }
 
 const signin = (req, res) => {
